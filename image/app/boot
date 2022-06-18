@@ -27,4 +27,28 @@ chmod 600 /etc/ssh/ssh_host_*_key
 
 echo "Host key type: ${HOST_KEY_STATUS}"
 
+# Configuration
+if [ -f /config/ssh/sshd_config ]; then
+    rm -f /etc/ssh/sshd_config
+    ln -s /config/ssh/sshd_config /etc/ssh/sshd_config
+fi
+
+# User Setup
+addgroup sshers
+cat /config/ssh/users | while read line; do
+    if [[ ${line:0:1} == "#" ]]; then
+        continue
+    fi
+
+    user="$(echo $line | cut -d':' -f1)"
+    key="$(echo $line | cut -d':' -f2-)"
+
+    echo "Creating user ${user}"
+
+    adduser -s /bin/false -D "${user}" sshers
+    echo "${user}:$(cat /dev/urandom | tr -dc '[:alpha:]' | fold -w ${1:-20} | head -n 1)" | chpasswd &>/dev/null # Random password
+
+    # TODO: Setup SSH keys
+done
+
 exec /usr/sbin/sshd -D -e
