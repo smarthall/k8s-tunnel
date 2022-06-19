@@ -1,19 +1,17 @@
 #!/bin/sh
 
 set -euo pipefail
-set -x
 
 # Host Keys
 HOST_KEY_STATUS="none"
 if [ -d /config/host_keys ]; then
     HOST_KEY_STATUS="provided"
 
-    cp /config/host_keys/ssh_host_{rsa,dsa,ecdsa,ed25519}_key{,.pub} /etc/ssh/
+    cp /config/host_keys/ssh_host_{rsa,ecdsa,ed25519}_key{,.pub} /etc/ssh/
 else
     HOST_KEY_STATUS="generated"
 
     ssh-keygen -b 4096 -f /etc/ssh/ssh_host_rsa_key -t rsa -N "" &>/dev/null
-    ssh-keygen -b 1024 -f /etc/ssh/ssh_host_dsa_key -t dsa -N "" &>/dev/null
     ssh-keygen -f /etc/ssh/ssh_host_ecdsa_key -t ecdsa -N "" &>/dev/null
     ssh-keygen -f /etc/ssh/ssh_host_ed25519_key -t ed25519 -N "" &>/dev/null
 fi
@@ -24,7 +22,7 @@ if [ -d /config/sign_keys ]; then
     ssh-keygen -s /config/sign_keys/ca -I "${HOST}" -h /etc/ssh/ssh_host_*_key.pub
 fi
 
-chmod 600 /etc/ssh/ssh_host_*_key
+chmod 600 /etc/ssh/ssh_host_*
 
 echo "Host key type: ${HOST_KEY_STATUS}"
 
