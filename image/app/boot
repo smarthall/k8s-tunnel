@@ -19,7 +19,7 @@ fi
 if [ -d /config/sign_keys ]; then
     HOST_KEY_STATUS="signed"
 
-    ssh-keygen -s /config/sign_keys/ca -I "${HOST}" -h /etc/ssh/ssh_host_*_key.pub
+    ssh-keygen -s /config/sign_keys/ca -I "${HOSTNAME}" -h /etc/ssh/ssh_host_*_key.pub
 fi
 
 chmod 600 /etc/ssh/ssh_host_*
