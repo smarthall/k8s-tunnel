@@ -26,12 +26,6 @@ chmod 600 /etc/ssh/ssh_host_*
 
 echo "Host key type: ${HOST_KEY_STATUS}"
 
-# Configuration
-if [ -f /config/ssh/sshd_config ]; then
-    rm -f /etc/ssh/sshd_config
-    ln -s /config/ssh/sshd_config /etc/ssh/sshd_config
-fi
-
 # User Setup
 addgroup sshers
 cat /config/ssh/users | while read line; do
@@ -63,4 +57,4 @@ cat /config/ssh/users | while read line; do
     chown -R daniel:daniel "${keypath}"
 done
 
-exec /usr/sbin/sshd -D -e
+exec /usr/sbin/sshd -D -e -f /opt/app/sshd_config
