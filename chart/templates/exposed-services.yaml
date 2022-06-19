@@ -1,0 +1,18 @@
+{{ range .Values.exposed_ports }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "chart.fullname" $ }}-exposed-{{ .name }}
+  labels:
+    {{- include "chart.labels" $ | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .port }}
+      targetPort: {{ .port }}
+      protocol: TCP
+      name: exposed-{{ .port }}
+  selector:
+    {{- include "chart.selectorLabels" $ | nindent 4 }}
+{{ end }}
