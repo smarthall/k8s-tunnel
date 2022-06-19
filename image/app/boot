@@ -7,7 +7,7 @@ HOST_KEY_STATUS="none"
 if [ -d /config/host_keys ]; then
     HOST_KEY_STATUS="provided"
 
-    cp /config/host_keys/ssh_host_{rsa,ecdsa,ed25519}_key{,.pub} /etc/ssh/
+    ln -s /config/host_keys/ssh_host_{rsa,ecdsa,ed25519}_key{,.pub} /etc/ssh/
 else
     HOST_KEY_STATUS="generated"
 
